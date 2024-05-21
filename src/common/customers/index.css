@@ -1,0 +1,39 @@
+.form-container-register-customer{
+    background-color: white;
+    padding: 10px;
+    border-radius: 0;
+    max-width: 400px;
+    /* height: 550px; */
+    margin: 50px auto;
+    /* Cách top 50px */
+}
+body {
+    background-color: beige;
+}
+.header{
+    padding: 10px 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.header button{
+    border: none;
+    background-color: beige;
+}
+.form-container-register-with-email{
+    background-color: white;
+    padding: 10px;
+    border-radius: 0;
+    max-width: 400px;
+    /* height: 550px; */
+    margin: 50px auto;
+    /* Cách top 50px */
+}
+.form-container-register-with-otp{
+    background-color: white;
+    padding: 10px;
+    border-radius: 0;
+    max-width: 400px;
+    /* height: 550px; */
+    margin: 50px auto;
+    /* Cách top 50px */
+}
