@@ -4,6 +4,7 @@ import { showError, showSuccess, showWarning } from '../common/log/log';
 import { Button, DatePicker, Drawer, Form, InputNumber, Select } from 'antd';
 import CinemasGetAll from '../common/cinemas/CinemasGetAll';
 import './index.css';
+import moment from 'moment';
 
 export default function UpdateShowTimeById({ show_time_id }) {
 
@@ -43,7 +44,7 @@ export default function UpdateShowTimeById({ show_time_id }) {
             const formData = new FormData();
             formData.append('id', show_time_id);
             formData.append('cinema_name', cinemaName);
-            formData.append('movie_time', values.movie_time.unix());
+            formData.append('movie_time',moment(values.movie_time).unix());
             formData.append('quantity', values.quantity);
             formData.append('price', values.price);
             formData.append('discount', values.discount);
@@ -63,11 +64,11 @@ export default function UpdateShowTimeById({ show_time_id }) {
             } else if (response.data.result.code === 26) {
                 showWarning("Suất chiếu đã tồn tại vui lòng chọn lại");
             } else {
-                showError('Lỗi server, vui lòng thử lại');
+                showError('Lỗi server, vui lòng thử lại 1');
             }
         } catch (error) {
             console.log(error);
-            showError('Lỗi server, vui lòng thử lại');
+            showError('Lỗi server, vui lòng thử lại 2');
         }
     };
 

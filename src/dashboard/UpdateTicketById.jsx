@@ -129,7 +129,7 @@ export default function UpdateTicketById({ ticketId }) {
                 </Form.Item>
 
                 <Form.Item
-                    label="Sale"
+                    label="Giảm giá"
                     name="sale"
                     initialValue={ticket.sale}
                 >

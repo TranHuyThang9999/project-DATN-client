@@ -175,6 +175,7 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
       >
         {selectedRecord && (
           <div style={{ padding: '10px 16px' }}>
+            <div>màn hình trong rạp chiếu phim</div>
             <SelectedSeat
               SelectedSeatGetFormApi={selectedRecord.selected_seat}
               heightContainerUseSaveData={selectedRecord.height_container}
