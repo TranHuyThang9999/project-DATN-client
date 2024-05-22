@@ -5,7 +5,7 @@ import SelectedSeat from '../../common/cinemas/SelectedSeat';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import Addcart from '../../cart/Addcart';
-
+import './index.css';
 export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
   const [showTimeTicket, setShowTimeTicket] = useState([]);
   const [open, setOpen] = useState(false);
@@ -65,11 +65,11 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
   }
   const handleRowClick = (record) => {
     if (selectedRow === record.key) {
-        setSelectedRow(null);
+      setSelectedRow(null);
     } else {
-        setSelectedRow(record.key);
+      setSelectedRow(record.key);
     }
-};
+  };
 
   const columns = [
     { title: 'Code', dataIndex: 'id', key: 'id' },
@@ -162,8 +162,8 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
         }}
         onRow={(record) => ({
           onClick: () => handleRowClick(record),
-      })}
-      rowClassName={(record) => (record.key === selectedRow ? 'selected-row' : '')}
+        })}
+        rowClassName={(record) => (record.key === selectedRow ? 'selected-row' : '')}
       />
       <Drawer
         title="Phòng"
@@ -175,7 +175,9 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
       >
         {selectedRecord && (
           <div style={{ padding: '10px 16px' }}>
-            <div>màn hình trong rạp chiếu phim</div>
+            <div className="cinema-screen">
+              màn hình trong rạp chiếu phim
+            </div>
             <SelectedSeat
               SelectedSeatGetFormApi={selectedRecord.selected_seat}
               heightContainerUseSaveData={selectedRecord.height_container}
