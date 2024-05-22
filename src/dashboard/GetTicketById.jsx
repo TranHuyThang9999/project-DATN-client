@@ -31,7 +31,7 @@ export default function GetTicketById({ id }) {
     };
 
     useEffect(() => {
-      
+
         fetchData();
     }, [id]);
 
@@ -49,7 +49,16 @@ export default function GetTicketById({ id }) {
 
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
-
+    const getStatusText = (status) => {
+        switch (status) {
+            case 15:
+                return 'mở bán';
+            case 17:
+                return 'chưa mở bán';
+            default:
+                return 'Unknown';
+        }
+    };
     return (
         <div>
             <Button onClick={toggleAddShowTimeModal}>
@@ -78,8 +87,14 @@ export default function GetTicketById({ id }) {
                     <Table.Column title="Mô tả" dataIndex="description" key="description" />
                     <Table.Column title="Giảm giá" dataIndex="sale" key="sale" />
                     <Table.Column title="Ngày phát hành" dataIndex="release_date" key="release_date" render={formatTimestamp} />
-                    <Table.Column title="Trạng thái" dataIndex="status" key="status" />
-                    <Table.Column title="Ghế đã chọn" dataIndex="selected_seat" key="selected_seat" />
+                    <Table.Column
+                        title="Trạng thái"
+                        dataIndex="status"
+                        key="status"
+                        render={(text, record) => (
+                            <span>{getStatusText(record.status)}</span>
+                        )}
+                    />
                     <Table.Column title="Thời lượng phim" dataIndex="movieDuration" key="movieDuration" />
                     <Table.Column title="Giới hạn độ tuổi" dataIndex="age_limit" key="age_limit" />
                     <Table.Column title="Đạo diễn" dataIndex="director" key="director" />
