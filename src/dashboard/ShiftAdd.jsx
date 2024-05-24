@@ -1,78 +1,103 @@
+import { Button, Form, Input } from 'antd';
 import React, { useState } from 'react';
-import { Button, Table, Upload, message } from 'antd';
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons'; // Thêm DownloadOutlined từ ant-design/icons
+import './index.css';
 import * as XLSX from 'xlsx';
-import axios from 'axios';
 
 export default function ShiftAdd() {
-    const [excelData, setExcelData] = useState(null);
+    const [formData, setFormData] = useState({
+        employeeName: '',
+        shift: '',
+        cinemaName: '',
+        age: '',
+        address: '',
+        workDate: ''
+    });
 
-    const handleFileUpload = (info) => {
-        const file = info.file;
-        const reader = new FileReader();
-        reader.onload = (evt) => {
-            const data = evt.target.result;
-            const workbook = XLSX.read(new Uint8Array(data), { type: 'array' });
-            const sheetName = workbook.SheetNames[0]; // Assuming only one sheet
-            const sheet = workbook.Sheets[sheetName];
-            const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-            setExcelData(jsonData);
-        };
-        reader.readAsArrayBuffer(file);
+    const layout = {
+        labelCol: {
+            span: 8,
+        },
+        wrapperCol: {
+            span: 16,
+        },
     };
 
-    const sendDataToApi = async () => {
-        try {
-            // Tạo mảng các đối tượng JSON theo yêu cầu của API
-            const formattedData = excelData.slice(1).map(row => ({
-                user_name: row[0],
-                shift_names: row[1],
-                cinema_name: row[2],
-                age: row[3],
-                address: row[4]
-            }));
+    const handleChange = (e, field) => {
+        const { value } = e.target;
+        setFormData(prevState => ({
+            ...prevState,
+            [field]: value
+        }));
+    };
 
-            // Gửi dữ liệu đã được định dạng lại lên API sử dụng axios
-            const response = await axios.post('http://localhost:8080/manager/user/add/staff', formattedData);
-            console.log(response.data);
-            message.success('Data saved successfully!');
-        } catch (error) {
-            console.error('Error saving data:', error);
-            message.error('Failed to save data. Please try again later.');
+    const handleExportData = () => {
+        // Kiểm tra xem có đầy đủ thông tin hay không
+        if (formData.employeeName && formData.shift && formData.cinemaName && formData.age && formData.address && formData.workDate) {
+            // Tạo một đối tượng mới để chứa dữ liệu
+            const dataToExport = {
+                'Tên nhân viên	': formData.employeeName,
+                'Ca làm việc': formData.shift,
+                'Tên rạp': formData.cinemaName,
+                'Tuổi': formData.age,
+                'Địa chỉ': formData.address,
+                'Ngày làm việc': formData.workDate
+            };
+
+            // Tạo một mảng chứa đối tượng mới
+            const dataArray = [dataToExport];
+
+            // Tạo workbook và worksheet từ mảng dữ liệu
+            const workbook = XLSX.utils.book_new();
+            const worksheet = XLSX.utils.json_to_sheet(dataArray);
+
+            // Thêm worksheet vào workbook
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+
+            // Xuất file Excel và tải xuống
+            XLSX.writeFile(workbook, 'exported_data.xlsx');
+        } else {
+            // Hiển thị thông báo lỗi nếu thông tin chưa đầy đủ
+            alert('Please fill in all fields before exporting data.');
         }
     };
 
-    const exportToExcel = () => {
-        if (!excelData) return;
-
-        const sheet = XLSX.utils.aoa_to_sheet(excelData);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, sheet, 'Sheet1');
-        XLSX.writeFile(workbook, 'export.xlsx');
-    };
-
-    const columns = excelData ? excelData[0].map((header, index) => ({ title: header, dataIndex: index.toString() })) : [];
-
     return (
         <div>
-            <Upload
-                beforeUpload={() => false}
-                onChange={handleFileUpload}
-                showUploadList={false}
-            >
-                <Button>
-                    <UploadOutlined /> Upload file excel
-                </Button>
-            </Upload>
-            {excelData && (
-                <div>
-                    <Table dataSource={excelData.slice(1)} columns={columns} />
-                    <Button onClick={sendDataToApi}>Send Data to API</Button>
-                    <Button onClick={exportToExcel} style={{ marginLeft: '10px' }}>
-                        <DownloadOutlined /> Export to Excel
-                    </Button>
-                </div>
-            )}
+            <Form {...layout} style={{ width: '' }} className="form-container-exprort-data">
+                <Form.Item
+                    label='Tên nhân viên'
+                >
+                    <Input value={formData.employeeName} onChange={(e) => handleChange(e, 'employeeName')} />
+                </Form.Item>
+                <Form.Item
+                    label='Ca làm việc'
+                >
+                    <Input value={formData.shift} onChange={(e) => handleChange(e, 'shift')} />
+                </Form.Item>
+                <Form.Item
+                    label='Tên rạp'
+                >
+                    <Input value={formData.cinemaName} onChange={(e) => handleChange(e, 'cinemaName')} />
+                </Form.Item>
+                <Form.Item
+                    label='Tuổi'
+                >
+                    <Input value={formData.age} onChange={(e) => handleChange(e, 'age')} />
+                </Form.Item>
+                <Form.Item
+                    label='Địa chỉ'
+                >
+                    <Input value={formData.address} onChange={(e) => handleChange(e, 'address')} />
+                </Form.Item>
+                <Form.Item
+                    label='Ngày làm việc'
+                >
+                    <Input value={formData.workDate} onChange={(e) => handleChange(e, 'workDate')} />
+                </Form.Item>
+                <Form.Item  wrapperCol={{ offset: 8, span: 16 }}>
+                    <Button onClick={handleExportData}>Export data</Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 }

@@ -60,3 +60,10 @@
 :where(.css-dev-only-do-not-override-11xg00t).ant-layout .ant-layout-header, :where(.css-dev-only-do-not-override-11xg00t).ant-layout.ant-layout-footer{
   justify-content: space-between;
 }
+.form-container-exprort-data{
+  background-color: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 400px;
+  margin: 50px auto;
+}

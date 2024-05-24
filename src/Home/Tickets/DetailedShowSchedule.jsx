@@ -104,8 +104,9 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
   const handleCreatePayment = async () => {
     setLoadingPayment(true);
     try {
-      const amount = selectedRecord.price * selectPopChid.length;
-
+      const amount = selectedRecord &&
+      (selectedRecord.price * selectPopChid.length) - (selectedRecord.price * selectPopChid.length) * (selectedRecord.discount / 100);
+  
       const requestData = {
         amount: amount,
         description: 'Xin Cam on',
@@ -114,10 +115,10 @@ export default function DetailedShowSchedule({ id, statusSaleForTicket }) {
         seats: selectPopChid.join(","),
         cancelUrl: "http://localhost:8080/manager/public/customer/payment/calcel",
         returnUrl: "http://localhost:8080/manager/public/customer/payment/return",
-        buyerName: "John Doe",
+        buyerName: email,
         buyerEmail: email,
         buyerPhone: phoneNumber,
-        buyerAddress: "123 Main St"
+        buyerAddress: ""
       };
 
       const response = await axios.post('http://localhost:8080/manager/public/customer/payment/pay', requestData, {

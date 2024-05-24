@@ -20,6 +20,8 @@ import GetAllTickets from './GetAllTickets';
 import MovieAdd from '../common/MovieTypes/MovieUpload';
 import PageForUser from '../Home/Page/PageForUser';
 import OrderStatistics from '../Orders/OrderStatistics';
+import ShiftAdd from './ShiftAdd';
+import ShiftGetAll from './ShiftGetAll';
 
 const { Header, Sider, Content } = Layout;
 
@@ -51,23 +53,23 @@ const items = [
   {
     key: '5',
     icon: <UsergroupAddOutlined />,
-    label: 'Thêm nhân viên ',
-    children: <CreateAccountStaff />
+    label: ' Quản lý nhân viên ',
+    children: <ShiftGetAll/>
   },
+  // {
+  //   key: '6',
+  //   icon: <SolutionOutlined />,
+  //   label: ' Quản lý nhân viên ',
+  //   children: <GetAllStaff />
+  // },
   {
     key: '6',
-    icon: <SolutionOutlined />,
-    label: ' Quản lý nhân viên ',
-    children: <GetAllStaff />
-  },
-  {
-    key: '7',
     icon: <SolutionOutlined />,
     label: 'Quản lý vé',
     children: <GetAllTickets />
   },
   {
-    key: '8',
+    key: '7',
     icon: <SolutionOutlined />,
     label: 'Thêm loại phim',
     children: <MovieAdd />

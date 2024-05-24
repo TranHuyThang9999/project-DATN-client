@@ -42,6 +42,8 @@ import GetListTicketByMovieName from "./common/ViewTicketsForSell/GetListTicketB
 import TestSelect from "./common/test/test";
 import RevenueOrder from "./Orders/RevenueOrder";
 import StatisticalBar from "./Orders/StatisticalBar";
+import ShiftGetAll from "./dashboard/ShiftGetAll";
+import ShiftAdd from "./dashboard/ShiftAdd";
 
 export default function App() {
   return (
@@ -101,6 +103,8 @@ export default function App() {
       {/* <RevenueOrder/> */}
       <CheckLogin/>
       {/* <StatisticalBar/> */}
+      {/* <ShiftAdd/> */}
+      {/* <ShiftGetAll/> */}
     </div>
   );
 }
