@@ -4,7 +4,6 @@ import { showError, showSuccess, showWarning } from '../common/log/log';
 import { Button, DatePicker, Drawer, Form, InputNumber, Select } from 'antd';
 import CinemasGetAll from '../common/cinemas/CinemasGetAll';
 import './index.css';
-import moment from 'moment';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
@@ -39,13 +38,15 @@ export default function UpdateShowTimeById({ show_time_id }) {
             try {
                 const response = await axios.get(`http://localhost:8080/manager/use/showtime?id=${show_time_id}`);
                 if (response.data.result.code === 0) {
-                    setShowTime(response.data.show_time);
+                    const fetchedShowTime = response.data.show_time;
+                    const movieTime = dayjs(fetchedShowTime.movie_time * 1000); // Chuyển đổi từ Unix timestamp sang dayjs
+                    setShowTime(fetchedShowTime);
                     form.setFieldsValue({
-                        price: response.data.show_time.price,
-                        quantity: response.data.show_time.quantity,
-                        cinema_name: response.data.show_time.cinema_name,
-                        discount: response.data.show_time.discount,
-                        movie_time: dayjs(response.data.show_time.movie_time), // Thiết lập giá trị mặc định cho movie_time
+                        price: fetchedShowTime.price,
+                        quantity: fetchedShowTime.quantity,
+                        cinema_name: fetchedShowTime.cinema_name,
+                        discount: fetchedShowTime.discount,
+                        movie_time: movieTime,
                     });
                 } else {
                     showError("error server");
