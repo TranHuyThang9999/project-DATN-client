@@ -1,17 +1,38 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { showError, showSuccess, showWarning } from '../common/log/log';
 import { Button, DatePicker, Drawer, Form, InputNumber, Select } from 'antd';
 import CinemasGetAll from '../common/cinemas/CinemasGetAll';
 import './index.css';
 import moment from 'moment';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+
+dayjs.extend(customParseFormat);
+
+const range = (start, end) => {
+    const result = [];
+    for (let i = start; i < end; i++) {
+        result.push(i);
+    }
+    return result;
+};
+
+const disabledDate = (current) => {
+    return current && current < dayjs().endOf('day');
+};
+
+const disabledDateTime = () => ({
+    disabledHours: () => range(0, 24).splice(4, 20),
+    disabledMinutes: () => range(30, 60),
+    disabledSeconds: () => [55, 56],
+});
 
 export default function UpdateShowTimeById({ show_time_id }) {
-
     const [showTime, setShowTime] = useState(null);
     const [cinemaName, setCinemaName] = useState('');
     const [form] = Form.useForm();
-    const [visible, setVisible] = useState(false); // State để kiểm soát trạng thái mở của Drawer
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -19,6 +40,13 @@ export default function UpdateShowTimeById({ show_time_id }) {
                 const response = await axios.get(`http://localhost:8080/manager/use/showtime?id=${show_time_id}`);
                 if (response.data.result.code === 0) {
                     setShowTime(response.data.show_time);
+                    form.setFieldsValue({
+                        price: response.data.show_time.price,
+                        quantity: response.data.show_time.quantity,
+                        cinema_name: response.data.show_time.cinema_name,
+                        discount: response.data.show_time.discount,
+                        movie_time: dayjs(response.data.show_time.movie_time), // Thiết lập giá trị mặc định cho movie_time
+                    });
                 } else {
                     showError("error server");
                 }
@@ -26,9 +54,9 @@ export default function UpdateShowTimeById({ show_time_id }) {
                 console.log(error);
                 showError("error server");
             }
-        }
+        };
         fetchData();
-    }, [show_time_id]);
+    }, [show_time_id, form]);
 
     const layout = {
         labelCol: {
@@ -42,9 +70,10 @@ export default function UpdateShowTimeById({ show_time_id }) {
     const handleFormSubmit = async (values) => {
         try {
             const formData = new FormData();
+            const timeRequest = values.movie_time.unix(); // Chuyển đổi dayjs object sang unix timestamp
             formData.append('id', show_time_id);
             formData.append('cinema_name', cinemaName);
-            formData.append('movie_time',moment(values.movie_time).unix());
+            formData.append('movie_time', timeRequest);
             formData.append('quantity', values.quantity);
             formData.append('price', values.price);
             formData.append('discount', values.discount);
@@ -82,11 +111,11 @@ export default function UpdateShowTimeById({ show_time_id }) {
     }
 
     const handleUpdateClick = () => {
-        setVisible(true); // Mở Drawer khi nhấn nút cập nhật
+        setVisible(true);
     };
 
     const handleCloseDrawer = () => {
-        setVisible(false); // Đóng Drawer khi cần
+        setVisible(false);
     };
 
     return (
@@ -96,12 +125,20 @@ export default function UpdateShowTimeById({ show_time_id }) {
                 title="Cập nhật suất chiếu"
                 width={500}
                 onClose={handleCloseDrawer}
-                visible={visible} // Trạng thái mở của Drawer được kết nối với state
+                visible={visible}
                 bodyStyle={{ paddingBottom: 80 }}
             >
-                <Form style={{ width: '600px' }} {...layout} form={form} className="form-container-update-show-time" onFinish={handleFormSubmit}>
+                <Form
+                    style={{ width: '600px' }}
+                    {...layout}
+                    form={form}
+                    className="form-container-update-show-time"
+                    onFinish={handleFormSubmit}
+                    initialValues={{
+                        remember: true,
+                    }}
+                >
                     <Form.Item
-                        initialValue={showTime.price}
                         label="Nhập giá vé"
                         className="form-row"
                         name="price"
@@ -110,7 +147,6 @@ export default function UpdateShowTimeById({ show_time_id }) {
                     </Form.Item>
 
                     <Form.Item
-                        initialValue={showTime.quantity}
                         label="Nhập số lượng vé trên 1 phòng"
                         className="form-row"
                         name="quantity"
@@ -131,7 +167,6 @@ export default function UpdateShowTimeById({ show_time_id }) {
                     </Form.Item>
                     <Form.Item
                         label='Giảm giá vé'
-                        initialValue={showTime.discount}
                         name="discount"
                     >
                         <InputNumber />
@@ -141,15 +176,17 @@ export default function UpdateShowTimeById({ show_time_id }) {
                         name="movie_time"
                     >
                         <DatePicker
-                            
-                            // defaultValue={showTime.movie_time ? moment.unix(showTime.movie_time) : null}
-                            showTime
+                            format="YYYY-MM-DD HH:mm:ss"
+                            disabledDate={disabledDate}
+                            disabledTime={disabledDateTime}
+                            showTime={{
+                                defaultValue: dayjs('00:00:00', 'HH:mm:ss'),
+                            }}
                         />
                     </Form.Item>
                     <Button type="primary" htmlType="submit">Cập nhật lại suất chiếu</Button>
                 </Form>
             </Drawer>
-
         </div>
-    )
+    );
 }
