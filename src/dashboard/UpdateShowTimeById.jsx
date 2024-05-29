@@ -27,7 +27,7 @@ const disabledDateTime = () => ({
     disabledSeconds: () => [55, 56],
 });
 
-export default function UpdateShowTimeById({ show_time_id }) {
+export default function UpdateShowTimeById({ show_time_id}) {
     const [showTime, setShowTime] = useState(null);
     const [cinemaName, setCinemaName] = useState('');
     const [form] = Form.useForm();
@@ -91,14 +91,14 @@ export default function UpdateShowTimeById({ show_time_id }) {
 
             if (response.data.result.code === 0) {
                 showSuccess('Cập nhật thành công');
-            } else if (response.data.result.code === 26) {
+            } else if (response.data.result.code === 40) {
                 showWarning("Suất chiếu đã tồn tại vui lòng chọn lại");
             } else {
-                showError('Lỗi server, vui lòng thử lại 1');
+                showError('Lỗi server, vui lòng thử lại');
             }
         } catch (error) {
             console.log(error);
-            showError('Lỗi server, vui lòng thử lại 2');
+            showError('Lỗi server, vui lòng thử lại');
         }
     };
 
