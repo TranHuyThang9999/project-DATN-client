@@ -101,10 +101,11 @@ export default function App() {
       {/* <GetListTicketByMovieName movieName={'s'}/> */}
       {/* <TestSelect/> */}
       {/* <RevenueOrder/> */}
-      <CheckLogin/>
+      {/* <CheckLogin/> */}
       {/* <StatisticalBar/> */}
       {/* <ShiftAdd/> */}
       {/* <ShiftGetAll/> */}
+      <MovieAdd/>
     </div>
   );
 }
